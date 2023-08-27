@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Jogo muito foda da reação</title>
+</head>
+
+<body>
+    <div id="titulo">Reação</div>
+    <button id="quadrado" onclick="jogo()"></button>
+    <div id="placar">
+        <div>Placar</div>
+        <div id="mostraplacar"></div>
+    </div>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        
+        body {
+            background-color: black;
+            color: white;
+        }
+        
+        main {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        #placar {
+            padding: 50px;
+            font-size: 30px;
+        }
+        
+        #titulo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 200px;
+            font-size: 30px;
+        }
+    </style>
+    <script>
+        let quadrado = document.getElementById('quadrado');
+        let mostraplacar = document.getElementById('mostraplacar');
+        let pos = Math.max();
+        let placar = [pos, pos, pos, pos, pos];
+        let seg = 0;
+        let ms = 0;
+        let cronometro;
+
+
+        function mudaplacar(segundos) {
+            for (var i = 0; i < placar.length; i++) {
+                if (segundos < placar[i] * -1) {
+                    placar[i] = segundos;
+                    break;
+                }
+            }
+        }
+
+
+        function criaplacar() {
+
+
+            mostraplacar.innerHTML = '';
+            for (var i = 0; i < placar.length; i++) {
+                if (i == placar.length - 1 && placar[i] == pos)
+                    mostraplacar.innerHTML += ' 00';
+                else if (placar[i] == pos)
+                    mostraplacar.innerHTML += ' 00 -';
+                else if (i == placar.length - 1 && placar[i] != pos)
+                    mostraplacar.innerHTML += ' 0' + placar[i];
+                else if (placar[i] != pos)
+                    mostraplacar.innerHTML += ' 0' + placar[i] + ' -';
+            }
+        }
+
+
+        function start() {
+            criaplacar();
+            seg = 0;
+            ms = 0;
+            quadrado.style.width = '500px';
+            quadrado.style.height = '300px';
+            quadrado.style.fontSize = '50px';
+            quadrado.style.backgroundColor = 'gray';
+            quadrado.textContent = 'Clique aqui para começar o jogo!';
+            quadrado.style.cursor = 'pointer';
+            quadrado.style.color = 'white';
+        }
+
+
+        function jogo() {
+            if (quadrado.style.backgroundColor == 'gray') {
+                quadrado.style.backgroundColor = 'red';
+                quadrado.textContent = 'Aperte ao ficar verde!';
+                var timer = Math.floor(Math.random() * 500 + 1000);
+                quadrado.onclick = null;
+                setTimeout(jogo, timer)
+
+
+            } else if (quadrado.style.backgroundColor == 'red') {
+                quadrado.style.backgroundColor = 'green';
+                quadrado.textContent = 'Aperte!';
+                quadrado.style.cursor = 'pointer';
+                quadrado.onclick = jogo;
+                iniciaTimer();
+            } else if (quadrado.style.backgroundColor == 'green') {
+                mudaplacar(seg + (ms / 1000));
+                paraCronometro();
+                start();
+            }
+        }
+
+
+        function iniciaTimer() {
+            cronometro = setInterval(() => {
+                if (ms == 1000) {
+                    seg++
+                    ms = 0;
+                } else {
+                    ms++;
+                }
+            }, 1);
+        }
+
+
+        function paraCronometro() {
+            clearInterval(cronometro);
+        }
+
+
+        document.body.onload = start();
+    </script>
+</body>
+
+</html>

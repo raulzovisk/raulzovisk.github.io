@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Jogo muito foda da forca</title>
+</head>
+
+<body>
+    <div id="mae">
+        <div id="telaJogo"><img id="imagem" src="https://cdn-icons-png.flaticon.com/512/3269/3269914.png" alt=""></div>
+        <div id="palavra">
+        </div>
+        <div id="dica">Dica: </div>
+        <div id="teclado">
+            <div class="linhas">
+                <button id="tecla-Q" onclick="verificaLetra('Q')">Q</button>
+                <button id="tecla-W" onclick="verificaLetra('W')">W</button>
+                <button id="tecla-E" onclick="verificaLetra('E')">E</button>
+                <button id="tecla-R" onclick="verificaLetra('R')">R</button>
+                <button id="tecla-T" onclick="verificaLetra('T')">T</button>
+                <button id="tecla-Y" onclick="verificaLetra('Y')">Y</button>
+                <button id="tecla-U" onclick="verificaLetra('U')">U</button>
+                <button id="tecla-I" onclick="verificaLetra('I')">I</button>
+                <button id="tecla-O" onclick="verificaLetra('O')">O</button>
+                <button id="tecla-P" onclick="verificaLetra('P')">P</button>
+            </div>
+            <div class="linhas">
+                <button id="tecla-A" onclick="verificaLetra('A')">A</button>
+                <button id="tecla-S" onclick="verificaLetra('S')">S</button>
+                <button id="tecla-D" onclick="verificaLetra('D')">D</button>
+                <button id="tecla-F" onclick="verificaLetra('F')">F</button>
+                <button id="tecla-G" onclick="verificaLetra('G')">G</button>
+                <button id="tecla-H" onclick="verificaLetra('H')">H</button>
+                <button id="tecla-J" onclick="verificaLetra('J')">J</button>
+                <button id="tecla-K" onclick="verificaLetra('K')">K</button>
+                <button id="tecla-L" onclick="verificaLetra('L')">L</button>
+            </div>
+            <div class="linhas">
+                <button id="tecla-Z" onclick="verificaLetra('Z')">Z</button>
+                <button id="tecla-X" onclick="verificaLetra('X')">X</button>
+                <button id="tecla-C" onclick="verificaLetra('C')">C</button>
+                <button id="tecla-V" onclick="verificaLetra('V')">V</button>
+                <button id="tecla-B" onclick="verificaLetra('B')">B</button>
+                <button id="tecla-N" onclick="verificaLetra('N')">N</button>
+                <button id="tecla-M" onclick="verificaLetra('M')">M</button>
+                <button id="teclaReset" onclick="teclaReset()"><img id="icone"
+                        src="https://e7.pngegg.com/pngimages/479/787/png-clipart-reset-button-icon-restart-free-text-internet.png"
+                        alt=""></button>
+            </div>
+        </div>
+        <div id="obs"> Use o botão &nbsp<img src="https://e7.pngegg.com/pngimages/479/787/png-clipart-reset-button-icon-restart-free-text-internet.png" alt="" id="imgOBS"> &nbsp para reiniciar o jogo.</div>
+    </div>
+    <style>
+        body,
+        html {
+            width: 100%;
+            height: 100%;
+            padding: 0px;
+            margin: 0px;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: white;
+        }
+        
+        #mae {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            flex-direction: column;
+        }
+        
+        #teclado {
+            width: 800px;
+            height: 250px;
+            background-color: black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            animation: rgbTeclado 5s infinite, efeitoSombra 5s infinite;
+            border-radius: 7px;
+        }
+        
+        .linhas {
+            width: 800px;
+            height: 100px;
+            display: flex;
+            flex-direction: wrap;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+        }
+        
+        .linhas button {
+            width: 80px;
+            height: 80px;
+            background-color: black;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            font-size: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: rgb 5s infinite, rgbLetras 5s infinite, efeitoSombra 5s infinite;
+        }
+        
+        .linhas button:hover {
+            transform: scale(1.3);
+        }
+        
+        #icone {
+            width: 70px;
+            height: 70px;
+        }
+        
+        #imagem {
+            width: 312px;
+            height: 312px;
+        }
+        
+        #telaJogo {
+            width: 600px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #palavra {
+            width: 280px;
+            height: 50px;
+            color: black;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            font-size: 40px;
+            border: 1px solid black;
+            animation: rgb 5s infinite, efeitoSombraPalavra 5s infinite;
+            border-radius: 5px;
+        }
+        
+        .letras {
+            display: flex;
+            justify-content: center;
+            text-decoration: underline;
+            text-decoration-color: black;
+        }
+        
+        #obs {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: black;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        #dica {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: black;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        #imgOBS {
+            width: 40px;
+            height: 40px;
+        }
+        
+        #contaVidas {
+            font-size: 20px;
+            font-weight: bold;
+            color: black;
+        }
+    </style>
+    <script>
+        let palavraSorteada;
+        let palavraCategoria;
+        let tentativas = 6;
+        let lista = [];
+        const palavras = [
+            palavra001 = {
+                nome: "CASA",
+                categoria: "LUGAR"
+            },
+            palavra002 = {
+                nome: "INGLATERRA",
+                categoria: "LUGAR"
+            },
+            palavra003 = {
+                nome: "BRASIL",
+                categoria: "LUGAR"
+            },
+            palavra004 = {
+                nome: "BUTAO",
+                categoria: "LUGAR"
+            },
+            palavra005 = {
+                nome: "ARGENTINA",
+                categoria: "LUGAR"
+            },
+            palavra006 = {
+                nome: "INGLATERRA",
+                categoria: "LUGAR"
+            },
+            palavra007 = {
+                nome: "ESPANHA",
+                categoria: "LUGAR"
+            },
+            palavra008 = {
+                nome: "ITALIA",
+                categoria: "LUGAR"
+            },
+            palavra009 = {
+                nome: "JAPAO",
+                categoria: "LUGAR"
+            },
+            palavra010 = {
+                nome: "CHINA",
+                categoria: "LUGAR"
+            },
+            palavra011 = {
+                nome: "BICICLETA",
+                categoria: "TRANSPORTE"
+            },
+            palavra012 = {
+                nome: "MOTO",
+                categoria: "TRANSPORTE"
+            },
+            palavra013 = {
+                nome: "CARRO",
+                categoria: "TRANSPORTE"
+            },
+            palavra014 = {
+                nome: "SUBMARINO",
+                categoria: "TRANSPORTE"
+            },
+            palavra015 = {
+                nome: "CAVALO",
+                categoria: "ANIMAL"
+            },
+            palavra016 = {
+                nome: "LEAO",
+                categoria: "ANIMAL"
+            },
+            palavra017 = {
+                nome: "AVESTRUZ",
+                categoria: "ANIMAL"
+            },
+            palavra018 = {
+                nome: "LAGARTIXA",
+                categoria: "ANIMAL"
+            },
+            palavra019 = {
+                nome: "TUBARAO",
+                categoria: "ANIMAL"
+            },
+            palavra020 = {
+                nome: "PEIXE",
+                categoria: "ANIMAL"
+            },
+            palavra021 = {
+                nome: "XICARA",
+                categoria: "OBJETO"
+            },
+            palavra022 = {
+                nome: "MOEDA",
+                categoria: "OBJETO"
+            },
+            palavra023 = {
+                nome: "TECLADO",
+                categoria: "OBJETO"
+            },
+            palavra024 = {
+                nome: "VIOLAO",
+                categoria: "OBJETO"
+            },
+            palavra025 = {
+                nome: "COMPUTADOR",
+                categoria: "OBJETO"
+            },
+            palavra026 = {
+                nome: "CADEIRA",
+                categoria: "OBJETO"
+            },
+            palavra027 = {
+                nome: "LAMPADA",
+                categoria: "OBJETO"
+            },
+            palavra028 = {
+                nome: "CELULAR",
+                categoria: "OBJETO"
+            },
+            palavra029 = {
+                nome: "TECLADO",
+                categoria: "OBJETO"
+            },
+            palavra030 = {
+                nome: "MESA",
+                categoria: "OBJETO"
+            },
+            palavra031 = {
+                nome: "LARANJA",
+                categoria: "ALIMENTO"
+            },
+            palavra032 = {
+                nome: "LEITE CONDENSADO",
+                categoria: "ALIMENTO"
+            },
+            palavra033 = {
+                nome: "PASTEL",
+                categoria: "ALIMENTO"
+            },
+            palavra034 = {
+                nome: "UVA",
+                categoria: "ALIMENTO"
+            },
+            palavra035 = {
+                nome: "LIMAO",
+                categoria: "ALIMENTO"
+            },
+            palavra036 = {
+                nome: "COXINHA",
+                categoria: "ALIMENTO"
+            },
+            palavra037 = {
+                nome: "PICANHA",
+                categoria: "ALIMENTO"
+            },
+            palavra038 = {
+                nome: "FRANGO",
+                categoria: "PROTEÍNA"
+            },
+            palavra039 = {
+                nome: "BRIGADEIRO",
+                categoria: "DOCE"
+            },
+            palavra040 = {
+                nome: "CHOCOLATE",
+                categoria: "DOCE"
+            },
+            palavra040 = {
+                nome: "DRAGAO",
+                categoria: "ANIMAL "
+            },
+            palavra041 = {
+                nome: "GALINHA",
+                categoria: "ANIMAL"
+            },
+            palavra042 = {
+                nome: "GALO",
+                categoria: "ANIMAL"
+            },
+            palavra043 = {
+                nome: "CAMELO",
+                categoria: "ANIMAL"
+            },
+            palavra044 = {
+                nome: "PERU",
+                categoria: "ANIMAL"
+            },
+            palavra045 = {
+                nome: "ZEBRA",
+                categoria: "ANIMAL"
+            },
+            palavra046 = {
+                nome: "CAMELO",
+                categoria: "ANIMAL"
+            },
+            palavra047 = {
+                nome: "CALANGO",
+                categoria: "ANIMAL"
+            },
+            palavra048 = {
+                nome: "SAPO",
+                categoria: "ANIMAL"
+            },
+            palavra049 = {
+                nome: "AGUIA",
+                categoria: "ANIMAL"
+            },
+            palavra050 = {
+                nome: "CACHORRO",
+                categoria: "ANIMAL"
+            }
+        ];
+        criarPalavra();
+
+
+        function criarPalavra() {
+            const iPalavra = parseInt(Math.random() * palavras.length)
+
+
+            palavraSorteada = palavras[iPalavra].nome;
+            palavraCategoria = palavras[iPalavra].categoria;
+        }
+        montarJogo();
+
+
+        function montarJogo() {
+            const dica = document.getElementById('dica');
+            dica.innerHTML = "DICA: " + palavraCategoria;
+
+
+            const palavra = document.getElementById('palavra');
+            palavra.innerHTML = "";
+
+
+            for (let index = 0; index < palavraSorteada.length; index++) {
+                if (lista[index] == undefined) {
+                    lista[index] = "&nbsp;"
+                    palavra.innerHTML = palavra.innerHTML + "<div class='letras'>" + lista[index] + "</div>"
+
+
+                } else {
+                    palavra.innerHTML = palavra.innerHTML + "<div class='letras'>" + lista[index] + "</div>"
+                }
+            }
+        }
+
+
+        function verificaLetra(letra) {
+            document.getElementById('tecla-' + letra).disable = true;
+            if (tentativas > 0) {
+                mudarEstilo('tecla-' + letra);
+                compararListas(letra);
+                montarJogo();
+            }
+
+
+        }
+
+
+        function mudarEstilo(tecla) {
+            document.getElementById(tecla).style.background = "#fff";
+            document.getElementById(tecla).style.color = "#000";
+            document.getElementById(tecla).disable;
+        }
+
+
+        function compararListas(letra) {
+            const pos = palavraSorteada.indexOf(letra)
+            if (pos < 0) {
+                tentativas--
+                alert('Você perdeu uma vida! \n O total agora é de: ' + tentativas + ' Vidas!')
+                if (tentativas == 0) {
+                    alert('Você perdeu! \n A palavra era: ' + palavraSorteada + '\n Clique no Botão Reset!')
+                }
+            } else {
+                for (let index = 0; index < palavraSorteada.length; index++) {
+                    if (palavraSorteada[index] == letra) {
+                        lista[index] = letra;
+                    }
+                }
+            }
+            let vitoria = true;
+            for (let index = 0; index < palavraSorteada.length; index++) {
+                if (palavraSorteada[index] != lista[index]) {
+                    vitoria = false;
+                }
+            }
+            if (vitoria == true) {
+                tentativas = 0;
+                alert('Parabéns, você venceu!');
+            }
+        }
+        let teclaReset = document.getElementById('teclaReset')
+        teclaReset.addEventListener('click', function() {
+            location.reload();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Digitação</title>
+</head>
+
+
+<body>
+    <h1>Jogo da Digitação</h1>
+    <div class="word-container">
+        <p class="word">Digite a palavra aqui</p>
+    </div>
+    <input type="text" id="input-word" autofocus>
+    <p class="timer">Tempo restante: <span id="countdown">60</span> segundos</p>
+    <div class="ranking">
+        <h2>Ranking</h2>
+        <ul id="ranking-list"></ul>
+    </div>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        h1 {
+            margin-bottom: 20px;
+        }
+        
+        .word-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            background-color: #f0f0f0;
+        }
+        
+        .word {
+            font-size: 36px;
+            font-weight: bold;
+        }
+        
+        input[type="text"] {
+            font-size: 24px;
+            padding: 5px;
+            margin-top: 10px;
+        }
+        
+        .timer {
+            font-size: 20px;
+            margin-top: 10px;
+        }
+        
+        .ranking {
+            margin-top: 30px;
+            text-align: left;
+        }
+        
+        .ranking h2 {
+            margin-bottom: 10px;
+        }
+        
+        .ranking li {
+            list-style: none;
+        }
+    </style>
+    <script>
+        const palavras = ["gato", "cachorro", "computador", "teclado", "javascript", "programacao", "pneumoultramicroscopicosilicovulcanoconiotico"];
+
+
+        let indicePalavraAtual = 0;
+        let palavraAtual = palavras[indicePalavraAtual];
+        let tempoRestante = 60;
+        let intervaloContagem;
+
+
+        const containerPalavra = document.querySelector(".word-container");
+        const elementoPalavra = document.querySelector(".word");
+        const inputPalavra = document.getElementById("input-word");
+        const elementoContagem = document.getElementById("countdown");
+        const listaRanking = document.getElementById("ranking-list");
+
+
+        function mostrarProximaPalavra() {
+            indicePalavraAtual = (indicePalavraAtual + 1) % palavras.length;
+            palavraAtual = palavras[indicePalavraAtual];
+            elementoPalavra.textContent = palavraAtual;
+            inputPalavra.value = "";
+        }
+
+
+        function atualizarContagem() {
+            tempoRestante--;
+            elementoContagem.textContent = tempoRestante;
+            if (tempoRestante <= 0) {
+                encerrarJogo();
+            }
+        }
+
+
+        function iniciarJogo() {
+            tempoRestante = 60;
+            intervaloContagem = setInterval(atualizarContagem, 1000);
+            inputPalavra.addEventListener("input", verificarEntrada);
+            mostrarProximaPalavra();
+        }
+
+
+        function encerrarJogo() {
+            clearInterval(intervaloContagem);
+            inputPalavra.removeEventListener("input", verificarEntrada);
+            inputPalavra.value = "";
+            elementoPalavra.textContent = "Fim do jogo!";
+            document.querySelector("button").style.display = "block";
+            salvarPontuacao();
+        }
+
+
+
+
+        function verificarEntrada() {
+            const palavraDigitada = inputPalavra.value.trim();
+            const palavraParaComparar = palavraAtual.substr(0, palavraDigitada.length);
+
+
+            if (palavraDigitada === palavraAtual) {
+                elementoPalavra.textContent = "Correto!";
+                setTimeout(mostrarProximaPalavra, 1000);
+            } else if (palavraDigitada === palavraParaComparar) {
+                elementoPalavra.innerHTML = `
+            ${palavraParaComparar}<span class="remaining">${palavraAtual.substr(palavraDigitada.length)}</span>
+        `;
+            } else {
+                tempoRestante -= 3;
+                elementoContagem.textContent = tempoRestante;
+            }
+        }
+
+
+        function salvarPontuacao() {
+            const pontuacao = tempoRestante;
+            const itemLista = document.createElement("li");
+            itemLista.textContent = `Pontuação: ${pontuacao}`;
+            listaRanking.appendChild(itemLista);
+        }
+
+
+
+
+
+
+        iniciarJogo();
+    </script>
+</body>
+
+
+</html>

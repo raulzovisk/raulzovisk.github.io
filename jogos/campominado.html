@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Campo Minado</title>
+    <style>
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(10, 40px);
+            background-color: #F0FFF0;
+        }
+        
+        .cell {
+            border: 1px solid #000;
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .mae {
+            width: 100%;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+        }
+        
+        body {
+            background-image: linear-gradient(75deg, #F5F5DC, #FDF5E6);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mae">
+        <div class="grid"></div>
+    </div>
+    <script>
+        const gridSize = 10;
+        const numMines = 10;
+
+        let grid = [];
+        let flags = 0;
+        let revealedCells = 0;
+        let gameOver = false;
+
+        function createGrid() {
+            const gridElement = document.querySelector('.grid');
+            for (let i = 0; i < gridSize; i++) {
+                grid[i] = [];
+                for (let j = 0; j < gridSize; j++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    cell.dataset.row = i;
+                    cell.dataset.col = j;
+                    cell.addEventListener('click', handleCellClick);
+                    cell.addEventListener('contextmenu', handleCellRightClick);
+                    gridElement.appendChild(cell);
+                    grid[i][j] = {
+                        element: cell,
+                        hasMine: false,
+                        revealed: false,
+                        flagged: false,
+                        adjacentMines: 0
+                    };
+                }
+            }
+        }
+
+        function plantMines() {
+            let minesPlanted = 0;
+            while (minesPlanted < numMines) {
+                const randomRow = Math.floor(Math.random() * gridSize);
+                const randomCol = Math.floor(Math.random() * gridSize);
+                const cell = grid[randomRow][randomCol];
+                if (!cell.hasMine) {
+                    cell.hasMine = true;
+                    minesPlanted++;
+                }
+            }
+        }
+
+        function revealCell(row, col) {
+            const cell = grid[row][col];
+            if (!cell.revealed && !cell.flagged) {
+                cell.revealed = true;
+                cell.element.style.backgroundColor = '#ccc';
+                revealedCells++;
+                if (cell.hasMine) {
+                    cell.element.textContent = 'X';
+                    gameOver = true;
+                    alert('Game Over! Você clicou em uma mina.');
+                } else {
+                    const adjacentCells = getAdjacentCells(row, col);
+                    let numAdjacentMines = 0;
+                    for (const [adjRow, adjCol] of adjacentCells) {
+                        const adjCell = grid[adjRow][adjCol];
+                        if (adjCell.hasMine) {
+                            numAdjacentMines++;
+                        }
+                    }
+                    cell.element.textContent = numAdjacentMines > 0 ? numAdjacentMines : '';
+                    if (numAdjacentMines === 0) {
+                        for (const [adjRow, adjCol] of adjacentCells) {
+                            revealCell(adjRow, adjCol);
+                        }
+                    }
+                }
+                if (revealedCells === gridSize * gridSize - numMines) {
+                    gameOver = true;
+                    alert('Parabéns! Você venceu!');
+                }
+            }
+        }
+
+
+        function toggleFlag(row, col) {
+            const cell = grid[row][col];
+            if (!cell.revealed) {
+                cell.flagged = !cell.flagged;
+                cell.element.textContent = cell.flagged ? 'F' : '';
+                cell.element.style.backgroundColor = cell.flagged ? '#ffc' : '';
+                flags += cell.flagged ? 1 : -1;
+            }
+        }
+
+        function handleCellClick(event) {
+            if (!gameOver) {
+                const row = parseInt(event.target.dataset.row);
+                const col = parseInt(event.target.dataset.col);
+                revealCell(row, col);
+            }
+        }
+
+        function handleCellRightClick(event) {
+            event.preventDefault();
+            if (!gameOver) {
+                const row = parseInt(event.target.dataset.row);
+                const col = parseInt(event.target.dataset.col);
+                toggleFlag(row, col);
+            }
+        }
+
+        function getAdjacentCells(row, col) {
+            const adjacentCells = [];
+            for (let i = -1; i <= 1; i++) {
+                for (let j = -1; j <= 1; j++) {
+                    if (i === 0 && j === 0) continue;
+                    const adjRow = row + i;
+                    const adjCol = col + j;
+                    if (adjRow >= 0 && adjRow < gridSize && adjCol >= 0 && adjCol < gridSize) {
+                        adjacentCells.push([adjRow, adjCol]);
+                    }
+                }
+            }
+            return adjacentCells;
+        }
+
+        createGrid();
+        plantMines();
+    </script>
+</body>
+
+</html>

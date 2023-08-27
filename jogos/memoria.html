@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Memória</title>
+</head>
+
+<body>
+    <h1>Jogo da Memória</h1>
+    <div class="game-board">
+    </div>
+    <button onclick="startGame()">Iniciar Jogo</button>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        h1 {
+            margin-bottom: 20px;
+        }
+        
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            gap: 10px;
+        }
+        
+        .square {
+            width: 100px;
+            height: 100px;
+            background-color: #ccc;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        const colors = ["red", "blue", "green", "yellow", "purple", "orange"];
+        const levelSequence = [];
+        let userSequence = [];
+        let level = 1;
+        let sequenceIndex = 0;
+        let canClick = false;
+
+        function generateRandomSequence(length) {
+            const sequence = [];
+            for (let i = 0; i < length; i++) {
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                sequence.push(randomColor);
+            }
+            return sequence;
+        }
+
+        function flashSquare(color, interval) {
+            const square = document.querySelector(`.${color}`);
+            square.style.backgroundColor = color;
+            setTimeout(() => {
+                square.style.backgroundColor = "#ccc";
+            }, interval);
+        }
+
+        function playSequence() {
+            canClick = false;
+            const interval = 1000 - (level * 100);
+            for (let i = 0; i < levelSequence.length; i++) {
+                setTimeout(() => {
+                    flashSquare(levelSequence[i], interval / 2);
+                    if (i === levelSequence.length - 1) {
+                        setTimeout(() => {
+                            canClick = true;
+                        }, interval / 2);
+                    }
+                }, interval * i);
+            }
+        }
+
+        function checkSequence() {
+            if (userSequence[sequenceIndex] === levelSequence[sequenceIndex]) {
+                sequenceIndex++;
+                if (sequenceIndex === levelSequence.length) {
+                    level++;
+                    userSequence = [];
+                    sequenceIndex = 0;
+                    setTimeout(() => {
+                        startNextLevel();
+                    }, 1000);
+                }
+            } else {
+                alert("Sequência errada! Reiniciando o jogo.");
+                level = 1;
+                userSequence = [];
+                sequenceIndex = 0;
+            }
+        }
+
+        function startNextLevel() {
+            levelSequence.push(colors[Math.floor(Math.random() * colors.length)]);
+            playSequence();
+        }
+
+        function handleSquareClick(color) {
+            if (!canClick) return;
+            userSequence.push(color);
+            checkSequence();
+        }
+
+        function createGrid() {
+            const gameBoard = document.querySelector(".game-board");
+            gameBoard.innerHTML = "";
+
+            for (const color of colors) {
+                const square = document.createElement("div");
+                square.classList.add("square", color);
+                square.addEventListener("click", () => handleSquareClick(color));
+                gameBoard.appendChild(square);
+            }
+        }
+
+        function startGame() {
+            levelSequence.length = 0;
+            userSequence.length = 0;
+            level = 1;
+            sequenceIndex = 0;
+            createGrid();
+            startNextLevel();
+        }
+    </script>
+</body>
+
+</html>
